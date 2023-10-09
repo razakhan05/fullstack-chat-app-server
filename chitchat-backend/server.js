@@ -1,28 +1,20 @@
-const express = require("express");
-const { chats } = require("./data/data.js");
-const dotenv = require("dotenv");
-const connectDB = require("./config/db.js");
+import express from "express";
+import { config } from "dotenv";
+import connectDB from "./config/db.js";
+import userRoutes from "./routes/userRoutes.js";
 
-dotenv.config(); // Load environment variables from .env file
-
+// Load environment variables from .env file
+config();
 const app = express();
 connectDB();
+//to accepts json data from frontend
+app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("hello world ");
 });
 
-//getting all the chats data
-app.get("/api/chat", (req, res) => {
-  res.send(chats);
-});
-
-//single chat data
-app.get("/api/chat/:id", (req, res) => {
-  console.log(req.params.id);
-  const singleChatData = chats.find((c) => c._id === req.params.id);
-  res.send(singleChatData);
-});
+app.use("/api/user", userRoutes);
 
 const PORT = process.env.PORT || 5400;
 app.listen(PORT, console.log(`Server is running on port ${PORT} `));
