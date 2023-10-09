@@ -1,10 +1,12 @@
 const express = require("express");
 const { chats } = require("./data/data.js");
 const dotenv = require("dotenv");
+const connectDB = require("./config/db.js");
 
 dotenv.config(); // Load environment variables from .env file
 
 const app = express();
+connectDB();
 
 app.get("/", (req, res) => {
   res.send("hello world ");
