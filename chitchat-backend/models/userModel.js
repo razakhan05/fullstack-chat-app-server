@@ -16,7 +16,6 @@ const userModel = Schema(
 );
 
 userModel.methods.matchPassword = async function (enteredPassword) {
-  console.log("raza")
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
