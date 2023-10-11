@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 import { generateToken } from "../config/generateToken.js";
+
 export const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, picture } = req.body;
 
@@ -54,4 +55,19 @@ export const authUser = asyncHandler(async (req, res) => {
     throw new Error("Invalid email or password");
   }
   user?.save();
+});
+
+export const getAllUsers = asyncHandler(async (req, res) => {
+  const keyword = req.query.search
+    ? {
+        $or: [
+          { name: { $regex: req.query.search, $options: "i" } },
+          { email: { $regex: req.query.search, $options: "i" } },
+        ],
+      }
+    : {};
+
+  //all the user except the logged in user
+  const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
+  res.send(users);
 });

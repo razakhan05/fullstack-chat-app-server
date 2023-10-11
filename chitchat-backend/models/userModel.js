@@ -15,10 +15,6 @@ const userModel = Schema(
   { timestamps: true }
 );
 
-userModel.methods.matchPassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
-};
-
 userModel.pre("save", async function (next) {
   if (!this.isModified) {
     return next();
@@ -31,6 +27,10 @@ userModel.pre("save", async function (next) {
     return next(error);
   }
 });
+
+userModel.methods.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
 
 const User = model("User", userModel);
 export default User;
