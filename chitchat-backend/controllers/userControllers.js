@@ -29,7 +29,9 @@ export const registerUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       password: user.password,
-      picture: user.picture,
+      picture:
+        user.picture ||
+        "https://imgs.search.brave.com/gmQlDUTprun1ouvRkyWbKxT2ktGzzyE6iPym8mdGLLE/rs:fit:860:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJjYXZlLmNv/bS93cC93cDUxMTUz/NTkuanBn",
       token: generateToken(user._id),
     });
   } else {
@@ -41,13 +43,15 @@ export const registerUser = asyncHandler(async (req, res) => {
 export const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
-  if (user && (await user.matchPassword(password))) {
+  if (user && user.matchPassword(password)) {
     res.json({
       _id: user._id,
       name: user.name,
       email: user.email,
       password: user.password,
-      picture: user.picture,
+      picture:
+        user.picture ||
+        "https://imgs.search.brave.com/gmQlDUTprun1ouvRkyWbKxT2ktGzzyE6iPym8mdGLLE/rs:fit:860:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJjYXZlLmNv/bS93cC93cDUxMTUz/NTkuanBn",
       token: generateToken(user._id),
     });
   } else {
@@ -57,7 +61,8 @@ export const authUser = asyncHandler(async (req, res) => {
   user?.save();
 });
 
-export const getAllUsers = asyncHandler(async (req, res) => {
+//get all the search Users
+export const getSearchedUsers = asyncHandler(async (req, res) => {
   const keyword = req.query.search
     ? {
         $or: [
@@ -70,4 +75,9 @@ export const getAllUsers = asyncHandler(async (req, res) => {
   //all the user except the logged in user
   const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
   res.send(users);
+});
+
+//get all the users
+export const getAllUsers = asyncHandler(async (req, res) => {
+  res.json(await User.find({}));
 });

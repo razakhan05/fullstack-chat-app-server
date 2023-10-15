@@ -4,6 +4,7 @@ import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import chatRoutes from "./routes/chatRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
+import cors from "cors";
 
 // Load environment variables from .env file
 config();
@@ -13,6 +14,7 @@ const PORT = process.env.PORT || 5400;
 
 // Middleware to parse JSON data from frontend
 app.use(express.json());
+app.use(cors());
 
 //Routes
 app.get("/", (req, res) => {

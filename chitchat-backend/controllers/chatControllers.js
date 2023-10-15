@@ -9,11 +9,11 @@ export const createUserChat = expressAsyncHandler(async (req, res) => {
 
     if (!userId) {
       console.log("User ID parameter is missing in the request");
-      return res.status(400).send("Bad Request");
+      return res.sendStatus(400);
     }
 
     // Check if a chat between the users already exists
-    const existingChat = await Chat.findOne({
+    let existingChat = await Chat.find({
       isGroupChat: false,
       $and: [
         { users: { $elemMatch: { $eq: req.user._id } } },
@@ -22,13 +22,14 @@ export const createUserChat = expressAsyncHandler(async (req, res) => {
     })
       .populate("users", "-password")
       .populate("latestMessage");
+
     existingChat = await User.populate(existingChat, {
       path: "latestMessage.sender",
       select: "name picture email",
     });
 
-    if (existingChat) {
-      return res.status(200).send(existingChat);
+    if (existingChat.length > 0) {
+      return res.status(200).send(existingChat[0]);
     } else {
       // Create a new chat if one doesn't exist
       const chatData = {
@@ -43,7 +44,7 @@ export const createUserChat = expressAsyncHandler(async (req, res) => {
         "-password"
       );
 
-      return res.status(200).send(fullChat);
+      return res.status(200).json(fullChat);
     }
   } catch (error) {
     console.error("An error occurred:", error.message);
