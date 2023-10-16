@@ -8,16 +8,23 @@ const userModel = Schema(
     password: { type: String, required: true },
     picture: {
       type: String,
-      default:
-        "https://p4.wallpaperbetter.com/wallpaper/480/919/600/one-piece-whitebeard-1440x900-anime-one-piece-hd-art-wallpaper-preview.jpg",
+      default: "https://wallpaperaccess.com/full/3597680.jpg",
+    },
+    isAdmin: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
   },
   { timestamps: true }
 );
 
+userModel.methods.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
 userModel.pre("save", async function (next) {
-  if (!this.isModified) {
-    return next();
+  if (!this.isModified("password")) {
+    next();
   }
   try {
     const hashedPassword = await bcrypt.hash(this.password, 10);
@@ -27,10 +34,5 @@ userModel.pre("save", async function (next) {
     return next(error);
   }
 });
-
-userModel.methods.matchPassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
-};
-
 const User = model("User", userModel);
 export default User;

@@ -29,15 +29,14 @@ export const registerUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       password: user.password,
-      picture:
-        user.picture ||
-        "https://imgs.search.brave.com/gmQlDUTprun1ouvRkyWbKxT2ktGzzyE6iPym8mdGLLE/rs:fit:860:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJjYXZlLmNv/bS93cC93cDUxMTUz/NTkuanBn",
+      picture: user.picture,
       token: generateToken(user._id),
     });
   } else {
     res.status(400);
     throw new Error("Failed to create the user.");
   }
+  user.save();
 });
 
 export const authUser = asyncHandler(async (req, res) => {
@@ -49,16 +48,14 @@ export const authUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       password: user.password,
-      picture:
-        user.picture ||
-        "https://imgs.search.brave.com/gmQlDUTprun1ouvRkyWbKxT2ktGzzyE6iPym8mdGLLE/rs:fit:860:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJjYXZlLmNv/bS93cC93cDUxMTUz/NTkuanBn",
+      picture: user.picture,
       token: generateToken(user._id),
     });
   } else {
     res.status(401);
     throw new Error("Invalid email or password");
   }
-  user?.save();
+  user.save();
 });
 
 //get all the search Users
