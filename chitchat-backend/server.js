@@ -13,7 +13,7 @@ import { Server } from "socket.io";
 config();
 
 const app = express();
-const server = http.createServer(app); // Create an HTTP server for Socket.io
+const server = http.createServer(app);
 const PORT = process.env.PORT ;
 
 // Middleware to parse JSON data from frontend
@@ -22,8 +22,6 @@ app.use(
   cors({
     origin: "*",
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
   })
 );
 // Routes
@@ -48,7 +46,7 @@ server.listen(PORT, () => {
 const io = new Server(server, {
   pingTimeout: 60000,
   cors: {
-    origin: "*",
+    origin: "http://localhost:5173",
   },
 });
 
