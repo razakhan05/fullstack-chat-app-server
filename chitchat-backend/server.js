@@ -18,8 +18,14 @@ const PORT = process.env.PORT || 5400;
 
 // Middleware to parse JSON data from frontend
 app.use(express.json());
-app.use(cors());
-
+app.use(
+  cors({
+    origin: "*",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  })
+);
 // Routes
 app.get("/", (req, res) => {
   res.send("hello world");
@@ -42,7 +48,7 @@ server.listen(PORT, () => {
 const io = new Server(server, {
   pingTimeout: 60000,
   cors: {
-    origin: process.env.FRONTEND_URL,
+    origin: "*",
   },
 });
 
@@ -63,7 +69,7 @@ io.on("connection", (socket) => {
 
   socket.on("new-message", (newMessageRecieved) => {
     let chat = newMessageRecieved.chat;
-    console.log(chat)
+    console.log(chat);
 
     if (!chat.users) return console.log("chat.users not defined");
 
