@@ -14,7 +14,7 @@ config();
 
 const app = express();
 const server = http.createServer(app); // Create an HTTP server for Socket.io
-const PORT = process.env.PORT || 5400;
+const PORT = process.env.PORT ;
 
 // Middleware to parse JSON data from frontend
 app.use(express.json());
